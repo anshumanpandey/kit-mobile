@@ -7,33 +7,40 @@ import { default as theme } from '../utils/custom-theme.json';
 import { ScannedCode } from '../interfaces/ScanedCode';
 import useFetch from 'use-http';
 
+enum CHECK_STATE {
+  "CHECK_OUT",
+  "CHECK_IN"
+}
 
-const Item = ({ item, isScanned, onProductScanned, disabled = false }: { disabled: boolean,item: WithSubitem, isScanned: boolean, onProductScanned: (e: ScannedCode) => void }) => {
+const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingState }: { checkingState: CHECK_STATE,disabled: boolean,item: WithSubitem, isScanned: boolean, onProductScanned: (e: ScannedCode) => void }) => {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity
-      disabled={disabled}
-      onPress={() => {
-        navigation.navigate("CodeScanScreen", {
-          itemToScan: item,
-          onProductAdded: (scannedCode: ScannedCode) => {
-            onProductScanned(scannedCode)
-          }
-        })
-      }}
-      style={{ flexDirection: 'row', justifyContent: 'space-between', borderLeftColor: isScanned ? theme['color-success-600'] : theme['color-warning-600'], borderLeftWidth: 6, marginVertical: 8, flex: 0.5, margin: 5 }}>
-      <View style={{ flexGrow: 1, borderBottomColor: '#00000035', borderBottomWidth: 1, marginTop: 'auto', padding: '3%' }}>
-        <Text style={{ fontSize: 24 }}>{item.serialnumber}</Text>
-        <Text style={{ fontSize: 16 }}>Purchase date {item.date_of_purchase}</Text>
-        <Text style={{ fontSize: 16 }}>Warranty date {item.warranty_expiry_period}</Text>
+    <View
+      style={{ marginVertical: 8, flex: 0.5, margin: 5 }}>
+      <View style={{ borderLeftColor: isScanned ? theme['color-success-600'] : theme['color-warning-600'], borderLeftWidth: 6, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexGrow: 1, borderBottomColor: '#00000035', borderBottomWidth: 1, marginTop: 'auto', padding: '3%' }}>
+          <Text style={{ fontSize: 24 }}>{item.serialnumber}</Text>
+          <Text style={{ fontSize: 16 }}>Purchase date {item.date_of_purchase}</Text>
+          <Text style={{ fontSize: 16 }}>Warranty date {item.warranty_expiry_period}</Text>
+        </View>
+        <Image
+          resizeMode="contain"
+          style={{ width: 60 }}
+          source={{ uri: item.pictureurl || "https://static.thenounproject.com/png/145280-200.png"}}
+        />
       </View>
-      <Image
-        resizeMode="contain"
-        style={{ width: 60 }}
-        source={{ uri: item.pictureurl || "https://static.thenounproject.com/png/145280-200.png"}}
-      />
-    </TouchableOpacity>
+      <Button
+        disabled={disabled}
+        onPress={() => {
+          navigation.navigate("CodeScanScreen", {
+            itemToScan: item,
+            onProductAdded: (scannedCode: ScannedCode) => {
+              onProductScanned(scannedCode)
+            }
+          })
+        }}>{getCheckStateName(checkingState)}</Button>
+    </View>
   );
 }
 
@@ -47,11 +54,6 @@ const generateItemsFromProject = (project: Project) => {
     }
     return itemsArr
   }, [])
-}
-
-enum CHECK_STATE {
-  "CHECK_OUT",
-  "CHECK_IN"
 }
 
 const projectIsCheckout = (project: Project) => project.project_barcodes.length > 0
@@ -99,6 +101,7 @@ const SingleProjectScreen = () => {
   const renderItem = ({ item }: { item: WithSubitem }) => {
     return (
       <Item
+        checkingState={checkState}
         disabled={loading}
         item={item}
         isScanned={isScanned(item, checkState)}
@@ -131,7 +134,7 @@ const SingleProjectScreen = () => {
         ListFooterComponent={() => {
           return (
             <View>
-              <Button disabled={loading} status={checkState == CHECK_STATE.CHECK_OUT ? "primary" : 'success'} size="giant" onPress={() => {
+              <Button disabled={loading} status={'success'} size="giant" onPress={() => {
                 if (areAllItemsScanned(checkState, generateItemsFromProject(route.params?.project))) {
                   navigation.navigate('ProjectsScreen')
                 } else {
@@ -144,7 +147,7 @@ const SingleProjectScreen = () => {
                     ]
                   )
                 }
-              }}>{getCheckStateName(checkState)}</Button>
+              }}>Done</Button>
             </View>
           )
         }}
