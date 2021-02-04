@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "955155371291",
+    "project_id": "barcodescan-82097",
+    "storage_bucket": "barcodescan-82097.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955155371291:android:68ba320270767c752aefbe",
+        "android_client_info": {
+          "package_name": "com.kitinventory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955155371291-a9ovu089gk4o48asom1n9bufekcd475l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB0hvTKaFcb77Mq_QlY1bcraQKt_z0YOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955155371291-a9ovu089gk4o48asom1n9bufekcd475l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
