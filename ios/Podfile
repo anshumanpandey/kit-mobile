@@ -12,6 +12,8 @@ target 'kitinventory' do
     'BarcodeDetectorMLKit'
   ]
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   permissions_path = '../node_modules/react-native-permissions/ios'
 
   pod 'Permission-AppTrackingTransparency', :path => "#{permissions_path}/AppTrackingTransparency"
