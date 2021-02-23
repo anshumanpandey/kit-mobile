@@ -45,6 +45,8 @@
 	</array>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
   	<string>StreamGo wants to know your locations</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+  	<string>StreamGo wants to know your locations</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
