@@ -3,9 +3,11 @@ import { Button } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert, Image } from 'react-native';
 import { Project, WithSubitem } from '../interfaces/Project.interface';
-import { default as theme } from '../utils/custom-theme.json';
 import { ScannedCode } from '../interfaces/ScanedCode';
 import useFetch from 'use-http';
+import { lightFormat, parseISO } from 'date-fns';
+import useStreamFetch from '../utils/useStreamFetch';
+import { useGlobalState } from '../state';
 
 enum CHECK_STATE {
   "CHECK_OUT",
@@ -17,29 +19,19 @@ const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingSta
 
   return (
     <View
-      style={{ marginVertical: 8, flex: 0.5, margin: 5 }}>
-      <View style={{ borderLeftColor: isScanned ? theme['color-success-600'] : theme['color-warning-600'], borderLeftWidth: 6, flexDirection: 'row', justifyContent: 'space-between' }}>
+      style={{ flex: 0.5, backgroundColor: 'white' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Image
+          resizeMode="contain"
+          style={{ width: 60, marginLeft: '5%' }}
+          source={{ uri: item.pictureurl || "https://static.thenounproject.com/png/145280-200.png"}}
+        />
         <View style={{ flexGrow: 1, borderBottomColor: '#00000035', borderBottomWidth: 1, marginTop: 'auto', padding: '3%' }}>
           <Text style={{ fontSize: 24 }}>{item.serialnumber}</Text>
           <Text style={{ fontSize: 16 }}>Purchase date {item.date_of_purchase}</Text>
           <Text style={{ fontSize: 16 }}>Warranty date {item.warranty_expiry_period}</Text>
         </View>
-        <Image
-          resizeMode="contain"
-          style={{ width: 60 }}
-          source={{ uri: item.pictureurl || "https://static.thenounproject.com/png/145280-200.png"}}
-        />
       </View>
-      <Button
-        disabled={disabled}
-        onPress={() => {
-          navigation.navigate("CodeScanScreen", {
-            itemToScan: item,
-            onProductAdded: (scannedCode: ScannedCode) => {
-              onProductScanned(scannedCode)
-            }
-          })
-        }}>{getCheckStateName(checkingState)}</Button>
     </View>
   );
 }
@@ -88,34 +80,21 @@ const UseScannedItemsState = () => {
 const SingleProjectScreen = () => {
   const navigation = useNavigation();
   const route = useRoute()
+  
 
   const { addItem, isScanned, areAllItemsScanned } = UseScannedItemsState()
   const [checkState, setCheckState] = useState<CHECK_STATE>(CHECK_STATE.CHECK_OUT)
 
-  const { data = [], loading, error, post: sendScannedItem } = useFetch()
-
-  useEffect(() => {
-    setCheckState(projectIsCheckout(route.params?.project) ? CHECK_STATE.CHECK_OUT : CHECK_STATE.CHECK_IN)
-  }, [route.params?.project])
 
   const renderItem = ({ item }: { item: WithSubitem }) => {
     return (
       <Item
         checkingState={checkState}
-        disabled={loading}
+        disabled={false}
         item={item}
         isScanned={isScanned(item, checkState)}
         onProductScanned={(scannedcode) => {
-            const data = new FormData()
-            data.append("project_id", route.params?.project.id)
-            data.append("barcode_number", scannedcode.data)
-            data.append("checkout_status_id", checkState)
-            sendScannedItem('/checkout', data)
-            .then((r) => {
-              if (r) {
-                addItem(item, checkState)
-              }
-            })
+            
         }}
       />
     )
@@ -124,31 +103,56 @@ const SingleProjectScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        ListHeaderComponent={() => {
+        ListHeaderComponent={(props) => {
           return (
-            <View>
-              <Text style={{ fontSize: 26, textAlign: 'center' }}>{getCheckStateName(checkState)} Project</Text>
-            </View>
-          )
-        }}
-        ListFooterComponent={() => {
-          return (
-            <View>
-              <Button disabled={loading} status={'success'} size="giant" onPress={() => {
-                if (areAllItemsScanned(checkState, generateItemsFromProject(route.params?.project))) {
-                  navigation.navigate('ProjectsScreen')
-                } else {
-                  Alert.alert(
-                    "Warning",
-                    "All items are not checked in yet. Do you want to proceed with the missing items?",
-                    [
-                      { text: 'Proceed', onPress: () => navigation.navigate('ProjectsScreen') },
-                      { text: 'Cancel', style: 'cancel' }
-                    ]
-                  )
-                }
-              }}>Done</Button>
-            </View>
+            <>
+              <View style={{ padding: '3%', backgroundColor: 'white' }}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{getCheckStateName(checkState)} Project</Text>
+              </View>
+              <View>
+                <Text style={{ padding: '3%',fontSize: 16, opacity: 0.8 }}>INFO</Text>
+                  <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>Start Date</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.start_date), 'yyyy-MM-dd')}</Text>
+                  </View>
+
+                  <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>End Date</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.end_date), 'yyyy-MM-dd')}</Text>
+                  </View>
+
+                  <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>Shipping Date</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.shipping_date), 'yyyy-MM-dd')}</Text>
+                  </View>
+
+                  <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>Expected Return Date</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.expected_return_date), 'yyyy-MM-dd')}</Text>
+                  </View>
+              </View>
+              <Text style={{ padding: '3%',fontSize: 18, marginTop: '3%', opacity: 0.8 }}>{generateItemsFromProject(route.params?.project).length} items to checkout</Text>
+              <TouchableOpacity
+                style={{ padding: '3%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}
+                onPress={() => {
+                  navigation.navigate("CodeScanScreen", { project: route.params?.project })
+                  /*if (areAllItemsScanned(checkState, generateItemsFromProject(route.params?.project))) {
+                    navigation.navigate('ProjectsScreen')
+                  } else {
+                    Alert.alert(
+                      "Warning",
+                      "All items are not checked in yet. Do you want to proceed with the missing items?",
+                      [
+                        { text: 'Proceed', onPress: () => navigation.navigate('ProjectsScreen') },
+                        { text: 'Cancel', style: 'cancel' }
+                      ]
+                    )
+                  }*/
+                }}
+              >
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Open scanner to select item...</Text>
+              </TouchableOpacity>
+            </>
           )
         }}
         ListEmptyComponent={() => {
@@ -157,10 +161,10 @@ const SingleProjectScreen = () => {
           )
         }}
         ListFooterComponentStyle={{ marginTop: 'auto' }}
-        contentContainerStyle={{ padding: '5%', alignItems: 'stretch', flexGrow: 1 }}
+        contentContainerStyle={{ alignItems: 'stretch', flexGrow: 1 }}
         data={generateItemsFromProject(route.params?.project)}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item, idx) => `${item.id.toString()}-${idx.toString()}`}
       />
     </SafeAreaView>
   );

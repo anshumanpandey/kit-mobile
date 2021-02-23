@@ -16,7 +16,9 @@ axiosInstance.interceptors.request.use(
 
     const customeHeaders = {
       Authorization: Auth,
-      Accept: 'application/json'
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data'
+
     }
     config.headers = customeHeaders
 

@@ -21,12 +21,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import { setSessionToken, useGlobalState } from '../state';
 import useFetch from 'use-http';
+import useStreamFetch from '../utils/useStreamFetch';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [sessionToken] = useGlobalState("sessionToken")
 
-  const { loading, error, post } = useFetch()
+  const { loading, error, doRequest } = useStreamFetch()
   
 
   useFocusEffect(
@@ -39,7 +40,7 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: 'mark@streamgo.co.uk',
+      username: 'anshumanpandey71@gmail.com',
       password: 'kit@123%',
     },
     validate: (values) => {
@@ -59,10 +60,12 @@ const LoginScreen = () => {
       data.append("email", values.username)
       data.append("password", values.password)
       
-      post("/login", data)
+      doRequest("/login", { body: data, method: "post" })
       .then((r) => {
-        setSessionToken(r.access_token)
-        navigation.navigate('ProjectsScreen')
+        if (r.access_token) {
+          setSessionToken(r.access_token)
+          navigation.navigate('ProjectsScreen')
+        }
       })
     },
   });

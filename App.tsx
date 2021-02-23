@@ -18,8 +18,6 @@ const Stack = createStackNavigator();
 function App() {
   const [error] = useGlobalState('error');
 
-  console.log(error)
-
   if (error) {
     Alert.alert(
       "Error",

@@ -1,5 +1,5 @@
 import { IncomingOptions } from 'use-http';
-import { getGlobalState, setGlobalError } from '../state';
+import { getGlobalState, logout, setGlobalError } from '../state';
 
 export const fetchOtions: IncomingOptions = {
     interceptors: {
@@ -12,6 +12,7 @@ export const fetchOtions: IncomingOptions = {
             const newOptions = {
                 headers: {
                     Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data'
                 }
             }
 
@@ -20,19 +21,26 @@ export const fetchOtions: IncomingOptions = {
                 newOptions.headers.Authorization = `Bearer ${state.sessionToken}`;
             }
 
-            return { ...options, ...newOptions };
+            const req = { ...options, ...newOptions }
+
+            console.log({ req })
+
+            return req;
         },
         // every time we make an http request, before getting the response back, this will run
         response: async ({ response }) => {
+            console.log("cvccccccccccccccccccc");
+            console.log({ response });
+
             if (!response.ok) {
                 // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
                     setGlobalError(response.data.message);
                     if (response.status === 401) {
                         //dispatchGlobalState({ type: 'logout' });
+                        logout()
                     }
                     //console.log('error.response');
-                    //console.log(response.data.message);
                 throw Error(response.data.message)
             }
             return response
