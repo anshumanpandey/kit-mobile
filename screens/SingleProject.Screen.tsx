@@ -1,13 +1,12 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert, Image } from 'react-native';
 import { Project, WithSubitem } from '../interfaces/Project.interface';
 import { ScannedCode } from '../interfaces/ScanedCode';
-import useFetch from 'use-http';
-import { lightFormat, parseISO } from 'date-fns';
+import { BaseDateFormat } from '../utils/DateFormat';
+import { ScreensEnum } from '../utils/ScreensEnum';
 import useStreamFetch from '../utils/useStreamFetch';
-import { useGlobalState } from '../state';
 
 enum CHECK_STATE {
   "CHECK_OUT",
@@ -28,8 +27,23 @@ const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingSta
         />
         <View style={{ flexGrow: 1, borderBottomColor: '#00000035', borderBottomWidth: 1, marginTop: 'auto', padding: '3%' }}>
           <Text style={{ fontSize: 24 }}>{item.serialnumber}</Text>
-          <Text style={{ fontSize: 16 }}>Purchase date {item.date_of_purchase}</Text>
-          <Text style={{ fontSize: 16 }}>Warranty date {item.warranty_expiry_period}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <View>
+              <Text style={{ fontSize: 16 }}>Purchase date: {item.date_of_purchase}</Text>
+              <Text style={{ fontSize: 16 }}>Warranty date: {item.warranty_expiry_period}</Text>
+              <Text style={{ fontSize: 16 }}>Number: {item.serialnumber}</Text>
+              <Text style={{ fontSize: 16 }}>Status: {item.status}</Text>
+              <Text style={{ fontSize: 16 }}>Make: {item.make}</Text>
+              <Text style={{ fontSize: 16 }}>Model: {item.model}</Text>
+            </View>
+            <View>
+              <Image
+                resizeMode="contain"
+                style={{ width: 60, height: 60,marginLeft: '5%' }}
+                source={{ uri: item.barcode_url }}
+              />
+            </View>
+          </View>
         </View>
       </View>
     </View>
@@ -47,8 +61,6 @@ const generateItemsFromProject = (project: Project) => {
     return itemsArr
   }, [])
 }
-
-const projectIsCheckout = (project: Project) => project.project_barcodes.length > 0
 
 const getCheckStateName = (checkState: CHECK_STATE) => checkState == CHECK_STATE.CHECK_OUT ? "Check Out" : "Check In"
 
@@ -80,11 +92,32 @@ const UseScannedItemsState = () => {
 const SingleProjectScreen = () => {
   const navigation = useNavigation();
   const route = useRoute()
-  
+  const [project, setProject] = useState<Project>()
 
+  const { loading, error, doRequest } = useStreamFetch()
+
+  const updateCurrentProject = () => {
+    doRequest("/projects", { method: 'get' })
+    .then((projects) => {
+      const found = projects.find(p => p.id == route.params?.project.id)
+      if (found) {
+        setProject(found)
+      }
+    })
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!project && route.params?.project) {
+        setProject(route.params?.project)
+      } else {
+        updateCurrentProject()
+      }
+    }, [])
+  );
+  
   const { addItem, isScanned, areAllItemsScanned } = UseScannedItemsState()
   const [checkState, setCheckState] = useState<CHECK_STATE>(CHECK_STATE.CHECK_OUT)
-
 
   const renderItem = ({ item }: { item: WithSubitem }) => {
     return (
@@ -113,41 +146,60 @@ const SingleProjectScreen = () => {
                 <Text style={{ padding: '3%',fontSize: 16, opacity: 0.8 }}>INFO</Text>
                   <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Start Date</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.start_date), 'yyyy-MM-dd')}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.start_date)}</Text>
                   </View>
 
                   <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>End Date</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.end_date), 'yyyy-MM-dd')}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.end_date)}</Text>
                   </View>
 
                   <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Shipping Date</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.shipping_date), 'yyyy-MM-dd')}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.shipping_date)}</Text>
                   </View>
 
                   <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Expected Return Date</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{lightFormat(parseISO(route.params?.project.expected_return_date), 'yyyy-MM-dd')}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.expected_return_date)}</Text>
                   </View>
+
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      const params = { project: project, headerTitle: "Edit Project Code", apiEndpoint: "tracking_number", inputVal: project?.tracking_number }
+                      navigation.navigate(ScreensEnum.SingleInputScreen, params)
+                    }}
+                    style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>Project Code</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.tracking_number}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      const params = { project: project, headerTitle: "Edit Outgoing Tracking #", apiEndpoint: "outgoing_shipping_crate", inputVal: project?.outgoing_shipping_crate }
+                      navigation.navigate(ScreensEnum.SingleInputScreen, params)
+                    }}
+                    style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>Outgoing Tracking #</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.outgoing_shipping_crate}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      const params = { project: project, headerTitle: "Edit Incoming Tracking #", apiEndpoint: "incoming_shipping_crate", inputVal: project?.incoming_shipping_crate }
+                      navigation.navigate(ScreensEnum.SingleInputScreen, params)
+                    }}
+                    style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 16, color: '#000000' }}>Incoming Tracking #</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.incoming_shipping_crate}</Text>
+                  </TouchableOpacity>
               </View>
               <Text style={{ padding: '3%',fontSize: 18, marginTop: '3%', opacity: 0.8 }}>{generateItemsFromProject(route.params?.project).length} items to checkout</Text>
               <TouchableOpacity
                 style={{ padding: '3%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}
                 onPress={() => {
-                  navigation.navigate("CodeScanScreen", { project: route.params?.project })
-                  /*if (areAllItemsScanned(checkState, generateItemsFromProject(route.params?.project))) {
-                    navigation.navigate('ProjectsScreen')
-                  } else {
-                    Alert.alert(
-                      "Warning",
-                      "All items are not checked in yet. Do you want to proceed with the missing items?",
-                      [
-                        { text: 'Proceed', onPress: () => navigation.navigate('ProjectsScreen') },
-                        { text: 'Cancel', style: 'cancel' }
-                      ]
-                    )
-                  }*/
+                  navigation.navigate(ScreensEnum.CodeScanScreen, { project: project })
                 }}
               >
                 <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Open scanner to select item...</Text>
@@ -162,7 +214,7 @@ const SingleProjectScreen = () => {
         }}
         ListFooterComponentStyle={{ marginTop: 'auto' }}
         contentContainerStyle={{ alignItems: 'stretch', flexGrow: 1 }}
-        data={generateItemsFromProject(route.params?.project)}
+        data={generateItemsFromProject(project || route.params?.project)}
         renderItem={renderItem}
         keyExtractor={(item, idx) => `${item.id.toString()}-${idx.toString()}`}
       />

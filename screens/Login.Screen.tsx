@@ -40,7 +40,7 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: 'anshumanpandey71@gmail.com',
+      username: 'richard@streamgo.co.uk',
       password: 'kit@123%',
     },
     validate: (values) => {
@@ -62,6 +62,7 @@ const LoginScreen = () => {
       
       doRequest("/login", { body: data, method: "post" })
       .then((r) => {
+        console.log({ login: r })
         if (r.access_token) {
           setSessionToken(r.access_token)
           navigation.navigate('ProjectsScreen')

@@ -8,6 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
+    "android:log": "adb logcat com.kitinventory:D *:W",
     "build:debug": "react-native run-android --variant=release"
   },
   "dependencies": {
@@ -29,7 +30,9 @@
     "react-native-geolocation-service": "^5.2.0",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-gps-state": "^2.0.3",
+    "react-native-paper": "^4.7.2",
     "react-native-permissions": "^3.0.0",
+    "react-native-popup-menu": "^0.15.10",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.15.2",

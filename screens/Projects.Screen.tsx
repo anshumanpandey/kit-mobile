@@ -8,6 +8,8 @@ import SnackBar from 'react-native-snackbar-component'
 import { Project } from '../interfaces/Project.interface';
 import { requestLocationPermission, setGpsIsDisabled, showDisableLocationMessage, updateUserLocation, useGlobalState } from '../state';
 import useStreamFetch from '../utils/useStreamFetch';
+import { BaseDateFormat } from '../utils/DateFormat';
+import { ScreensEnum } from '../utils/ScreensEnum';
 
 
 const Item = (project: Project) => {
@@ -18,25 +20,20 @@ const Item = (project: Project) => {
     <TouchableOpacity
       //disabled={project.project_status != "Live"}
       onPress={() => {
-        navigation.navigate("SingleProjectScreen", { project })
+        navigation.navigate(ScreensEnum.SingleProjectScreen, { project })
       }}
       style={{ borderLeftColor: 'black', borderLeftWidth: 5, backgroundColor: 'white',marginVertical: 8, borderBottomWidth: 1, borderBottomColor: '#00000020', marginBottom: 5, flexDirection: 'row', height: di.height * 0.20 }}>
       <View style={{ height: '100%',width: '60%',marginTop: 'auto', padding: '3%', justifyContent: 'space-between' }}>
-        <View>
-          <Text style={{ fontSize: 12, color: '#00000095' }}>Created {lightFormat(parseISO(project.created_at), 'yyyy-MM-dd')}</Text>
+        <View style={{ flexGrow: 1 }}>
+          <Text style={{ fontSize: 12, color: '#00000095' }}>Created {BaseDateFormat(project.created_at)}</Text>
           <Text style={{ fontSize: 22, color: '#000000', fontWeight: 'bold' }}>{project.title}</Text>
 
           <View style={{ paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040' }}>
-            <Text style={{ fontSize: 12, color: '#00000095' }}>Start Date {lightFormat(parseISO(project.start_date), 'yyyy-MM-dd')}</Text>
-            <Text style={{ fontSize: 12, color: '#00000095' }}>End Date {lightFormat(parseISO(project.end_date), 'yyyy-MM-dd')}</Text>
+            <Text style={{ fontSize: 12, color: '#00000095' }}>Start Date {BaseDateFormat(project.pickup_date)}</Text>
+            <Text style={{ fontSize: 12, color: '#00000095' }}>End Date {BaseDateFormat(project.expected_return_date)}</Text>
           </View>
 
-          <View style={{ paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040' }}>
-            <Text style={{ fontSize: 12, color: '#00000095' }}>Shipping Date {lightFormat(parseISO(project.shipping_date), 'yyyy-MM-dd')}</Text>
-            <Text style={{ fontSize: 12, color: '#00000095' }}>Expected Return Date {lightFormat(parseISO(project.expected_return_date), 'yyyy-MM-dd')}</Text>
-          </View>
-
-          <Text style={{ fontSize: 12, color: '#00000095' }}>Pickup Date {lightFormat(parseISO(project.pickup_date), 'yyyy-MM-dd')}</Text>
+          <Text style={{ fontSize: 12, color: '#00000095', marginTop: 'auto' }}>Contact Person {project.client_name}</Text>
         </View>
 
       </View>
@@ -45,7 +42,7 @@ const Item = (project: Project) => {
           <Image
             resizeMode="contain"
             style={{ flex:1 , width: undefined, height: undefined }}
-            source={{ uri: 'https://as2.ftcdn.net/jpg/02/69/02/17/500_F_269021717_WqdoKLUupQC7WvdrgjYcDZ5m5g4DapEx.jpg' }} />
+            source={{ uri: project.with_subitems[0]?.pictureurl || 'https://as2.ftcdn.net/jpg/02/69/02/17/500_F_269021717_WqdoKLUupQC7WvdrgjYcDZ5m5g4DapEx.jpg' }} />
         </View>
         <View>
           <AntDesignIcon name="right" style={{ fontSize: 30, color: 'black'}} />

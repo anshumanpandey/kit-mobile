@@ -8,7 +8,6 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import { Button, Input } from '@ui-kitten/components';
 
 import {
   Colors,

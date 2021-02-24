@@ -26,7 +26,7 @@ export default <T = any>() => {
         .then((response) => {
             if (!response.ok) {
                 return response.json()
-                .then(err => Promise.reject(err))
+                .then(err => Promise.reject({ ...response, errorMessage: err }))
             }
             return response
         })
@@ -37,13 +37,14 @@ export default <T = any>() => {
             return response
         })
         .catch((response) => {
-            console.log({ errResponse: response })
+            console.log(response)
             setError(response)
-            setGlobalError(response);
+            setGlobalError(response.errorMessage.message);
             if (response.status === 401) {
-                //dispatchGlobalState({ type: 'logout' });
                 logout()
             }
+            setLoading(false)
+            throw response
         })
 
         
