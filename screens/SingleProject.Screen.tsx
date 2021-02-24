@@ -21,8 +21,6 @@ const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingSta
   if (item.status == "danger") tagColor = "#dc3545"
   if (item.status == "warning") tagColor = "#4f4f4f"
 
-  console.log(item.barcode_url)
-
   return (
     <View
       style={{ flex: 0.5, backgroundColor: 'white' }}>
@@ -33,15 +31,15 @@ const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingSta
           source={{ uri: item.pictureurl || "https://static.thenounproject.com/png/145280-200.png"}}
         />
         <View style={{ flexGrow: 1, borderBottomColor: '#00000035', borderBottomWidth: 1, marginTop: 'auto', padding: '3%' }}>
-          <Text style={{ fontSize: 24 }}>{item.make} - {item.model}</Text>
-          <View style={{ flexDirection: 'row' }}>
+          <Text style={{ fontSize: 20 }}>{item.make} - {item.model}</Text>
+          <View style={{ flexDirection: 'column' }}>
             <View style={{ alignSelf: "baseline",marginLeft: '2%', backgroundColor: item.status_color, padding: '2%', borderRadius: 5 }}>
               <Text style={{ color: 'white'}}>{item.status_text}</Text>
             </View>
-            <View>
+            <View style={{ flexDirection: 'row', marginTop: '2%', alignItems: 'flex-end' }}>
               <Image
                 resizeMode="contain"
-                style={{ width: 60, height: 60,marginLeft: '5%' }}
+                style={{ width: 35, height: 35,marginLeft: '5%' }}
                 source={{ uri: item.barcode_url }}
               />
               <Text>{item.barcode_no}</Text>
@@ -64,8 +62,6 @@ const generateItemsFromProject = (project: Project) => {
     return itemsArr
   }, [])
 }
-
-const getCheckStateName = (checkState: CHECK_STATE) => checkState == CHECK_STATE.CHECK_OUT ? "Check Out" : "Check In"
 
 const UseScannedItemsState = () => {
   const [scannedItems, setScannedItems] = useState<(WithSubitem & { forCheckState: CHECK_STATE })[]>([])
@@ -143,9 +139,6 @@ const SingleProjectScreen = () => {
         ListHeaderComponent={(props) => {
           return (
             <>
-              <View style={{ padding: '3%', backgroundColor: 'white' }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{getCheckStateName(checkState)} Project</Text>
-              </View>
               <View>
                 <Text style={{ padding: '3%',fontSize: 16, opacity: 0.8 }}>INFO</Text>
                   <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>

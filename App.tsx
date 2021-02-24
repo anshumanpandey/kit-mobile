@@ -49,7 +49,13 @@ function App() {
               name={ScreensEnum.ProjectsScreen}
               component={ProjectsScreen}
             />
-            <Stack.Screen options={{ headerShown: false }} name={ScreensEnum.SingleProjectScreen} component={SingleProjectScreen} />
+            <Stack.Screen
+              options={{
+                headerTitle: '',
+              }}
+              name={ScreensEnum.SingleProjectScreen}
+              component={SingleProjectScreen}
+            />
             <Stack.Screen options={{ headerShown: false }} name={ScreensEnum.CodeScanScreen} component={ScanCodeScreen} />
             <Stack.Screen
               options={{
