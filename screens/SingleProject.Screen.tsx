@@ -16,6 +16,13 @@ enum CHECK_STATE {
 const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingState }: { checkingState: CHECK_STATE,disabled: boolean,item: WithSubitem, isScanned: boolean, onProductScanned: (e: ScannedCode) => void }) => {
   const navigation = useNavigation();
 
+  let tagColor = "#ffc107"
+  if (item.status == "success") tagColor = "#28a745"
+  if (item.status == "danger") tagColor = "#dc3545"
+  if (item.status == "warning") tagColor = "#4f4f4f"
+
+  console.log(item.barcode_url)
+
   return (
     <View
       style={{ flex: 0.5, backgroundColor: 'white' }}>
@@ -26,15 +33,10 @@ const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingSta
           source={{ uri: item.pictureurl || "https://static.thenounproject.com/png/145280-200.png"}}
         />
         <View style={{ flexGrow: 1, borderBottomColor: '#00000035', borderBottomWidth: 1, marginTop: 'auto', padding: '3%' }}>
-          <Text style={{ fontSize: 24 }}>{item.serialnumber}</Text>
+          <Text style={{ fontSize: 24 }}>{item.make} - {item.model}</Text>
           <View style={{ flexDirection: 'row' }}>
-            <View>
-              <Text style={{ fontSize: 16 }}>Purchase date: {item.date_of_purchase}</Text>
-              <Text style={{ fontSize: 16 }}>Warranty date: {item.warranty_expiry_period}</Text>
-              <Text style={{ fontSize: 16 }}>Number: {item.serialnumber}</Text>
-              <Text style={{ fontSize: 16 }}>Status: {item.status}</Text>
-              <Text style={{ fontSize: 16 }}>Make: {item.make}</Text>
-              <Text style={{ fontSize: 16 }}>Model: {item.model}</Text>
+            <View style={{ alignSelf: "baseline",marginLeft: '2%', backgroundColor: item.status_color, padding: '2%', borderRadius: 5 }}>
+              <Text style={{ color: 'white'}}>{item.status_text}</Text>
             </View>
             <View>
               <Image
@@ -42,6 +44,7 @@ const Item = ({ item, isScanned, onProductScanned, disabled = false, checkingSta
                 style={{ width: 60, height: 60,marginLeft: '5%' }}
                 source={{ uri: item.barcode_url }}
               />
+              <Text>{item.barcode_no}</Text>
             </View>
           </View>
         </View>

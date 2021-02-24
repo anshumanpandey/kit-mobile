@@ -16,6 +16,9 @@ import { RNCamera } from 'react-native-camera';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { useGlobalState } from '../state';
 import useStreamFetch from '../utils/useStreamFetch';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import IoniconsIcon from "react-native-vector-icons/Ionicons"
+
 
 const ScanCodeScreen = () => {
   const route = useRoute()
@@ -26,7 +29,7 @@ const ScanCodeScreen = () => {
 
   const [lat] = useGlobalState("lat")
   const [long] = useGlobalState("long")
-  
+
   useFocusEffect(
     React.useCallback(() => {
       setLastCode(undefined)
@@ -37,15 +40,17 @@ const ScanCodeScreen = () => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
-          <View style={{ height: "80%", overflow: 'hidden'}}>
+          <View style={{ height: "80%", overflow: 'hidden' }}>
             <RNCamera
               captureAudio={false}
               style={{ flexGrow: 1 }}
               onBarCodeRead={(d) => {
-                console.log({ d })
+                console.log({ onBarCodeRead: d })
               }}
               onGoogleVisionBarcodesDetected={(d) => {
-                if (!lastCode && d.barcodes.length != 0 && d.barcodes[0].format != "None") {
+                console.log({ onGoogleVisionBarcodesDetected: d })
+
+                if (!loading && !lastCode && d.barcodes.length != 0 && d.barcodes[0].format != "None") {
                   setLastCode(d.barcodes[0])
                   const scannedCode = d.barcodes[0]
 
@@ -54,26 +59,31 @@ const ScanCodeScreen = () => {
                   data.append("barcode_number", scannedCode.data)
                   data.append("latitude", lat)
                   data.append("longitude", long)
-                  
-                  sendScannedItem('/checkout', { body: data, method: 'post'})
-                  .then((r) => {
-                    navigation.goBack()
-                    Alert.alert("Success", "Code Scanned")
-                  })
+
+                  sendScannedItem('/checkout', { body: data, method: 'post' })
+                    .then((r) => {
+                      Alert.alert("Success", r?.message || "Code Scanned")
+                    })
+                    .catch(() => setLastCode(undefined))
                 }
               }}
             />
           </View>
-          <View style={{ height: '25%', flexDirection: 'row', padding: '5%' }}>
-            <View>
-              <Image
-                style={{ width: 60, height: 60 }}
-                source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/UPC-A-036000291452.svg/1200px-UPC-A-036000291452.svg.png" }} />
+          <View style={{ height: '25%' }}>
+            <View style={{ flexDirection: 'row', padding: '5%' }}>
+              <View>
+                <Image
+                  style={{ width: 60, height: 60 }}
+                  source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/UPC-A-036000291452.svg/1200px-UPC-A-036000291452.svg.png" }} />
+              </View>
+              <View style={{ paddingHorizontal: '5%' }}>
+                <Text style={{ fontSize: 20 }}>Scanning...</Text>
+                <Text style={{ fontSize: 16, color: '#00000050' }}>Ensure have a good source of light and focus the code correctly</Text>
+              </View>
             </View>
-            <View style={{ paddingHorizontal: '5%'}}>
-              <Text style={{ fontSize: 20 }}>Scanning...</Text>
-              <Text style={{ fontSize: 16, color: '#00000050' }}>Ensure have a good source of light and focus the code correctly</Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{ fontSize: 28, textAlign: 'center' }}>Done</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
