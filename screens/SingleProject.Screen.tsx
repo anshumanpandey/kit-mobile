@@ -110,7 +110,8 @@ const SingleProjectScreen = () => {
     React.useCallback(() => {
       if (!project && route.params?.project) {
         setProject(route.params?.project)
-      } else {
+      }
+      if (route.params?.project) {
         updateCurrentProject()
       }
     }, [])
