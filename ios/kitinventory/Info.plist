@@ -46,7 +46,17 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
   	<string>StreamGo wants to know your locations</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-  	<string>StreamGo wants to know your locations</string>
+  	<string>KitGo wants to know your locations</string>
+	<key>NSCameraUsageDescription</key>
+	<string>KitGo need to access your camera </string>
+
+	<!-- Include this only if you are planning to use the camera roll -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>KitGo need to access your photo library</string>
+
+	<!-- Include this only if you are planning to use the microphone for video recording -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>KitGo need to access your microphone</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
