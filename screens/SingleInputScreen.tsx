@@ -74,7 +74,8 @@ const SingleInputScreen = () => {
       const req = handlers[route.params?.apiEndpoint]({ project: route.params?.project, value: values.inputVal })
 
       doRequest(req.url, req.req)
-      .then(() => {
+      .then((r) => {
+        console.log({ r })
         navigation.goBack()
       })
     },

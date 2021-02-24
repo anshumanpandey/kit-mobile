@@ -16,24 +16,26 @@ const Item = (project: Project) => {
   const navigation = useNavigation();
   const di = useWindowDimensions()
 
+  let tagColor = "#ffc107"
+  if (project.project_status == "success") tagColor = "#28a745"
+  if (project.project_status == "danger") tagColor = "#dc3545"
+  if (project.project_status == "warning") tagColor = "#4f4f4f"
+
   return (
     <TouchableOpacity
       //disabled={project.project_status != "Live"}
       onPress={() => {
         navigation.navigate(ScreensEnum.SingleProjectScreen, { project })
       }}
-      style={{ borderLeftColor: 'black', borderLeftWidth: 5, backgroundColor: 'white',marginVertical: 8, borderBottomWidth: 1, borderBottomColor: '#00000020', marginBottom: 5, flexDirection: 'row', height: di.height * 0.20 }}>
+      style={{ borderLeftColor: 'black', borderLeftWidth: 5, backgroundColor: 'white',marginVertical: 8, borderBottomWidth: 1, borderBottomColor: '#00000020', marginBottom: 5, flexDirection: 'row', height: di.height * 0.10 }}>
       <View style={{ height: '100%',width: '60%',marginTop: 'auto', padding: '3%', justifyContent: 'space-between' }}>
         <View style={{ flexGrow: 1 }}>
-          <Text style={{ fontSize: 12, color: '#00000095' }}>Created {BaseDateFormat(project.created_at)}</Text>
-          <Text style={{ fontSize: 22, color: '#000000', fontWeight: 'bold' }}>{project.title}</Text>
-
-          <View style={{ paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040' }}>
-            <Text style={{ fontSize: 12, color: '#00000095' }}>Start Date {BaseDateFormat(project.pickup_date)}</Text>
-            <Text style={{ fontSize: 12, color: '#00000095' }}>End Date {BaseDateFormat(project.expected_return_date)}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <Text style={{ fontSize: 22, color: '#000000', fontWeight: 'bold' }}>{project.title}</Text>
+            <View style={{ marginLeft: '2%', backgroundColor: tagColor, padding: '2%', borderRadius: 5 }}>
+              <Text style={{ color: 'white'}}>{project.project_status}</Text>
+            </View>
           </View>
-
-          <Text style={{ fontSize: 12, color: '#00000095', marginTop: 'auto' }}>Contact Person {project.client_name}</Text>
         </View>
 
       </View>

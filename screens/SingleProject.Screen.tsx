@@ -101,7 +101,7 @@ const SingleProjectScreen = () => {
     .then((projects) => {
       const found = projects.find(p => p.id == route.params?.project.id)
       if (found) {
-        setProject(found)
+        setProject({ ...found })
       }
     })
   }
