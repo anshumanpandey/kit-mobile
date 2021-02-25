@@ -6,6 +6,7 @@ import com.kitinventory.CustomClientFactory;  // replace <app-name>
 import com.facebook.react.modules.network.OkHttpClientProvider;
 import okhttp3.OkHttpClient;
 import android.os.Bundle;
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
 
@@ -20,6 +21,7 @@ public class MainActivity extends ReactActivity {
 
   @Override
     public void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 

@@ -15,6 +15,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { ScreensEnum } from './utils/ScreensEnum';
 import SingleInputScreen from './screens/SingleInputScreen';
 import { isReadyRef, navigationRef } from './utils/NavigationUtils';
+import SplashScreen from 'react-native-splash-screen'
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ function App() {
   const [error] = useGlobalState('error');
 
   React.useEffect(() => {
+    SplashScreen.hide();
     return () => {
       isReadyRef.current = false
     };

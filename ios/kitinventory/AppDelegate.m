@@ -31,6 +31,7 @@ static void InitializeFlipper(UIApplication *application) {
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
+  [RNSplashScreen show];
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif

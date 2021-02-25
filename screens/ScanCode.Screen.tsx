@@ -62,6 +62,7 @@ const ScanCodeScreen = () => {
 
                   sendScannedItem('/checkout', { body: data, method: 'post' })
                     .then((r) => {
+                      setLastCode(undefined)
                       Alert.alert("Success", r?.message || "Code Scanned")
                     })
                     .catch(() => setLastCode(undefined))
