@@ -76,7 +76,11 @@ const LoginScreen = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
           <View style={{ height: '35%', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 38, textAlign: 'center' }}>Welcome to Kit Inventory App</Text>
+          <Image
+            resizeMode="contain"
+            style={{ width: 400, height: '50%',marginLeft: 'auto', marginRight: 'auto' }}
+            source={require('../images/streamGo.png')}
+          />
           </View>
           <View style={{ padding: '5%'}}>
             <Input

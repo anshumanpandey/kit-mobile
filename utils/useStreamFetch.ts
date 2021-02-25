@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { getGlobalState, logout, setGlobalError } from "../state"
+import { resetToLoginScreen } from "./NavigationUtils"
 
 export default <T = any>() => {
     const [loading, setLoading] = useState(false)
@@ -42,6 +43,7 @@ export default <T = any>() => {
             setGlobalError(response.errorMessage.message);
             if (response.status === 401) {
                 logout()
+                resetToLoginScreen()
             }
             setLoading(false)
             throw response

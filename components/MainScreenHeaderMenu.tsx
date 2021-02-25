@@ -28,7 +28,7 @@ export const MainScreenHeaderMenu = () => {
       <Menu.Item
         onPress={() => {
           logout()
-          resetToLoginScreen(navigation)
+          resetToLoginScreen()
         }}
         title="Logout" />
     </Menu>

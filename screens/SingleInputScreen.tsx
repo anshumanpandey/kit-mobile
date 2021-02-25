@@ -63,14 +63,11 @@ const SingleInputScreen = () => {
     initialValues: {
       inputVal: '',
     },
-    validate: (values) => {
-      const errors: any = {}
-      if (!values.inputVal) {
-        errors.inputVal = "Required"
-      }
-      return errors
-    },
     onSubmit: values => {
+      if (!values.inputVal) {
+        navigation.goBack()
+        return 
+      }
       const req = handlers[route.params?.apiEndpoint]({ project: route.params?.project, value: values.inputVal })
 
       doRequest(req.url, req.req)
@@ -132,10 +129,9 @@ const SingleInputScreen = () => {
           numberOfLines={3}
           style={{ marginLeft: '2%' }}
           value={formik.values.inputVal}
-          placeholder='Place your value here'
+          placeholder='Type here...'
           onChangeText={formik.handleChange("inputVal")}
         />
-        {formik.errors.inputVal && <Text style={{ color: '#fc030350', marginLeft: '2%' }}>{formik.errors.inputVal}</Text>}
       </SafeAreaView>
     </>
   );

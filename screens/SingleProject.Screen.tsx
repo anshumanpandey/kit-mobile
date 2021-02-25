@@ -7,6 +7,7 @@ import { ScannedCode } from '../interfaces/ScanedCode';
 import { BaseDateFormat } from '../utils/DateFormat';
 import { ScreensEnum } from '../utils/ScreensEnum';
 import useStreamFetch from '../utils/useStreamFetch';
+import { ProjectsListItem } from './projects/ProjectsListItem';
 
 enum CHECK_STATE {
   "CHECK_OUT",
@@ -140,7 +141,7 @@ const SingleProjectScreen = () => {
           return (
             <>
               <View>
-                <Text style={{ padding: '3%',fontSize: 16, opacity: 0.8 }}>INFO</Text>
+                <ProjectsListItem {...(project || route.params?.project)} disabled={true} showArrowIcon={false} />
                   <View style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Start Date</Text>
                     <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.start_date)}</Text>
@@ -169,7 +170,7 @@ const SingleProjectScreen = () => {
                     }}
                     style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Project Code</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.tracking_number}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.tracking_number || "Click here to add..."}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -179,7 +180,7 @@ const SingleProjectScreen = () => {
                     }}
                     style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Outgoing Tracking #</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.outgoing_shipping_crate}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.outgoing_shipping_crate || "Click here to add..."}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -189,7 +190,7 @@ const SingleProjectScreen = () => {
                     }}
                     style={{ padding: '2%',backgroundColor: 'white',paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, color: '#000000' }}>Incoming Tracking #</Text>
-                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.incoming_shipping_crate}</Text>
+                    <Text style={{ fontSize: 16, color: '#00000095' }}>{project?.incoming_shipping_crate || "Click here to add..."}</Text>
                   </TouchableOpacity>
               </View>
               <Text style={{ padding: '3%',fontSize: 18, marginTop: '3%', opacity: 0.8 }}>{generateItemsFromProject(route.params?.project).length} items to checkout</Text>
