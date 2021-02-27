@@ -63,6 +63,7 @@ const ScanCodeScreen = () => {
                   sendScannedItem('/checkout', { body: data, method: 'post' })
                     .then((r) => {
                       setLastCode(undefined)
+                      navigation.goBack()
                       Alert.alert("Success", r?.message || "Code Scanned")
                     })
                     .catch(() => setLastCode(undefined))
@@ -83,7 +84,7 @@ const ScanCodeScreen = () => {
               </View>
             </View>
             <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{ fontSize: 28, textAlign: 'center' }}>Done</Text>
+              <Text style={{ fontSize: 28, textAlign: 'center' }}>Exit</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

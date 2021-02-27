@@ -23,10 +23,6 @@ const ProjectsScreen = () => {
     <ProjectsListItem {...item} />
   );
 
-  const TabTitle = ({ label }: { label: string }) => (
-    <Text style={{ fontSize: 18 }}>{label}</Text>
-  );
-
   return (
     <SafeAreaView pointerEvents="auto" style={{ flexGrow: 1 }}>
       <FlatList

@@ -40,7 +40,7 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: 'richard@streamgo.co.uk',
+      username: 'mark@streamgo.co.uk',
       password: 'kit@123%',
     },
     validate: (values) => {
@@ -75,12 +75,12 @@ const LoginScreen = () => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
-          <View style={{ height: '35%', justifyContent: 'center' }}>
-          <Image
-            resizeMode="contain"
-            style={{ width: 400, height: '50%',marginLeft: 'auto', marginRight: 'auto' }}
-            source={require('../images/streamGo.png')}
-          />
+          <View style={{ height: '30%', marginTop: '5%',justifyContent: 'center', backgroundColor: '#51c0b9' }}>
+            <Image
+              resizeMode="contain"
+              style={{ width: 400, height: '80%',marginLeft: 'auto', marginRight: 'auto' }}
+              source={require('../images/kitgoicon.png')}
+            />
           </View>
           <View style={{ padding: '5%'}}>
             <Input
