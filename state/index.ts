@@ -48,6 +48,50 @@ export const logout = () => {
   AsyncStorage.removeItem('sessionToken')
 }
 
+export const saveScannedCode = async (newCode: string) => {
+  const scannedCodeString = await AsyncStorage.getItem('scannedCodes')
+  let scannedCodes = []
+  if (scannedCodeString) {
+    scannedCodes = JSON.parse(scannedCodeString)
+  }
+  
+  const found = scannedCodes.find((c: string) => c == newCode)
+
+  if (!found) {
+    scannedCodes.push(newCode)
+    return AsyncStorage.setItem('scannedCodes', JSON.stringify(scannedCodes))
+  } 
+  return Promise.resolve()
+}
+
+export const codeIsSave = async (code: string) => {
+  const scannedCodeString = await AsyncStorage.getItem('scannedCodes')
+  let scannedCodes = []
+  if (scannedCodeString) {
+    scannedCodes = JSON.parse(scannedCodeString)
+  }
+
+  const found = scannedCodes.find((c: string) => c == code)
+
+  if (!found) {
+    return false
+  } 
+  return true
+}
+
+let clockStarted: boolean | NodeJS.Timeout = false
+export const startClearCodeTracking = () => {
+  if (clockStarted != false) return
+  console.log("starting clearing clock")
+
+  const minutes = 10
+
+  clockStarted = setInterval(() => {
+    console.log("Clearing scannedCodes")
+    AsyncStorage.removeItem('scannedCodes')
+  }, 60000 * minutes)
+}
+
 export const updateUserLocation = () => {
   Geolocation.getCurrentPosition(
     (position) => {

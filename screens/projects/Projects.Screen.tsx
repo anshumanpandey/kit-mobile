@@ -3,7 +3,7 @@ import React from 'react';
 import { SafeAreaView, FlatList, Text } from 'react-native';
 import SnackBar from 'react-native-snackbar-component'
 import { Project } from '../../interfaces/Project.interface';
-import { requestLocationPermission, setGpsIsDisabled, showDisableLocationMessage, updateUserLocation, useGlobalState } from '../../state';
+import { requestLocationPermission, setGpsIsDisabled, showDisableLocationMessage, startClearCodeTracking, updateUserLocation, useGlobalState } from '../../state';
 import useStreamFetch from '../../utils/useStreamFetch';
 import { ProjectsListItem } from './ProjectsListItem';
 
@@ -16,6 +16,7 @@ const ProjectsScreen = () => {
       getProjects('/projects')
       requestLocationPermission()
       updateUserLocation()
+      startClearCodeTracking()
     }, [])
   );
 

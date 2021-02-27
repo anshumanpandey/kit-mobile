@@ -14,7 +14,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import { RNCamera } from 'react-native-camera';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { useGlobalState } from '../state';
+import { codeIsSave, saveScannedCode, useGlobalState } from '../state';
 import useStreamFetch from '../utils/useStreamFetch';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IoniconsIcon from "react-native-vector-icons/Ionicons"
@@ -47,27 +47,40 @@ const ScanCodeScreen = () => {
               onBarCodeRead={(d) => {
                 console.log({ onBarCodeRead: d })
               }}
-              onGoogleVisionBarcodesDetected={(d) => {
+              onGoogleVisionBarcodesDetected={async (d) => {
                 console.log({ onGoogleVisionBarcodesDetected: d })
 
-                if (!loading && !lastCode && d.barcodes.length != 0 && d.barcodes[0].format != "None") {
-                  setLastCode(d.barcodes[0])
-                  const scannedCode = d.barcodes[0]
+                if (loading) return
+                if (lastCode) return
+                if (d.barcodes.length == 0) return 
+                if (d.barcodes[0].format == "None") return 
 
-                  const data = new FormData()
-                  data.append("project_id", route.params?.project.id)
-                  data.append("barcode_number", scannedCode.data)
-                  data.append("latitude", lat)
-                  data.append("longitude", long)
+                const scannedCode = d.barcodes[0]
 
-                  sendScannedItem('/checkout', { body: data, method: 'post' })
-                    .then((r) => {
-                      setLastCode(undefined)
-                      navigation.goBack()
-                      Alert.alert("Success", r?.message || "Code Scanned")
-                    })
-                    .catch(() => setLastCode(undefined))
-                }
+                const isSaved = await codeIsSave(scannedCode.data)
+                if (isSaved) return
+
+                setLastCode(d.barcodes[0])
+
+                const data = new FormData()
+                data.append("project_id", route.params?.project.id)
+                data.append("barcode_number", scannedCode.data)
+                data.append("latitude", lat)
+                data.append("longitude", long)
+
+                sendScannedItem('/checkout', { body: data, method: 'post' })
+                  .then(async (r) => {
+                    await saveScannedCode(scannedCode.data)
+                    return r
+                  })
+                  .then((r) => {
+                    setLastCode(undefined)
+                    navigation.goBack()
+                    Alert.alert("Success", r?.message || "Code Scanned")
+                  })
+                  .catch(() => {
+                    setLastCode(undefined)
+                  })
               }}
             />
           </View>
