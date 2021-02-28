@@ -24,6 +24,7 @@ const ScanCodeScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
   const [lastCode, setLastCode] = useState<any | undefined>();
+  const [scanProcessStarted, setScanProcessStarted] = useState<boolean>(false);
 
   const { data = [], loading, error, doRequest: sendScannedItem } = useStreamFetch()
 
@@ -45,19 +46,28 @@ const ScanCodeScreen = () => {
               captureAudio={false}
               style={{ flexGrow: 1 }}
               onBarCodeRead={(d) => {
-                console.log({ onBarCodeRead: d })
+                //console.log({ onBarCodeRead: d })
               }}
               onGoogleVisionBarcodesDetected={async (d) => {
-                console.log({ onGoogleVisionBarcodesDetected: d })
+                //console.log({ onGoogleVisionBarcodesDetected: d })
+                if (scanProcessStarted == true) return
+                setScanProcessStarted(true)
 
                 if (loading) return
                 if (lastCode) return
-                if (d.barcodes.length == 0) return 
-                if (d.barcodes[0].format == "None") return 
+                if (d.barcodes.length == 0) {
+                  setScanProcessStarted(false)
+                  return
+                } 
+                if (d.barcodes[0].format == "None") {
+                  setScanProcessStarted(false)
+                  return
+                }
 
                 const scannedCode = d.barcodes[0]
 
                 const isSaved = await codeIsSave(scannedCode.data)
+                console.log({ isSaved })
                 if (isSaved) return
 
                 setLastCode(d.barcodes[0])
@@ -75,10 +85,12 @@ const ScanCodeScreen = () => {
                   })
                   .then((r) => {
                     setLastCode(undefined)
+                    setScanProcessStarted(false)
                     navigation.goBack()
                     Alert.alert("Success", r?.message || "Code Scanned")
                   })
                   .catch(() => {
+                    setScanProcessStarted(false)
                     setLastCode(undefined)
                   })
               }}

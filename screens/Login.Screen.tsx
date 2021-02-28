@@ -75,7 +75,7 @@ const LoginScreen = () => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
-          <View style={{ height: '30%', marginTop: '5%',justifyContent: 'center', backgroundColor: '#51c0b9' }}>
+          <View style={{ height: '30%', marginTop: '5%',justifyContent: 'center' }}>
             <Image
               resizeMode="contain"
               style={{ width: 400, height: '80%',marginLeft: 'auto', marginRight: 'auto' }}
