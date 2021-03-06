@@ -23,7 +23,7 @@ export default <T = any>() => {
             newOptions.headers.Authorization = `Bearer ${state.sessionToken}`;
         }
         
-        return fetch(`http://18.130.151.94/api${input}`, { ...init, ...newOptions })
+        return fetch(`https://dashboard.kitgo.app/api${input}`, { ...init, ...newOptions })
         .then((response) => {
             if (!response.ok) {
                 return response.json()

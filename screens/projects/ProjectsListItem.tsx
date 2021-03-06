@@ -21,7 +21,7 @@ export const ProjectsListItem = ({ showArrowIcon = true, disabled = false,...pro
         onPress={() => {
           navigation.navigate(ScreensEnum.SingleProjectScreen, { project })
         }}
-        style={{ borderLeftColor: 'black', borderLeftWidth: 5, backgroundColor: 'white', marginVertical: 8, borderBottomWidth: 1, borderBottomColor: '#00000020', marginBottom: 5, flexDirection: 'row', height: di.height * 0.14 }}>
+        style={{ borderLeftColor: 'black', borderLeftWidth: 5, backgroundColor: 'white', marginVertical: 8, borderBottomWidth: 1, borderBottomColor: '#00000020', marginBottom: 5, flexDirection: 'row', height: di.height * 0.15 }}>
         <View style={{ height: '100%', width: '60%', marginTop: 'auto', padding: '3%', justifyContent: 'space-between' }}>
           <View style={{ flexGrow: 1 }}>
             <View>

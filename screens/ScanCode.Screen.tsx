@@ -49,7 +49,7 @@ const ScanCodeScreen = () => {
                 //console.log({ onBarCodeRead: d })
               }}
               onGoogleVisionBarcodesDetected={async (d) => {
-                //console.log({ onGoogleVisionBarcodesDetected: d })
+                console.log({ onGoogleVisionBarcodesDetected: d.barcodes })
                 if (scanProcessStarted == true) return
                 setScanProcessStarted(true)
 
@@ -90,6 +90,7 @@ const ScanCodeScreen = () => {
                     Alert.alert("Success", r?.message || "Code Scanned")
                   })
                   .catch(() => {
+                    console.log({ scannedCode })
                     setScanProcessStarted(false)
                     setLastCode(undefined)
                   })
