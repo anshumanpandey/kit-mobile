@@ -147,6 +147,11 @@ const SingleProjectScreen = () => {
 
                 <View style={{ padding: '2%', backgroundColor: 'white', paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
                   <Text style={{ fontSize: 16, color: '#000000' }}>Return Date</Text>
+                  <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.pickup_date)}</Text>
+                </View>
+
+                <View style={{ padding: '2%', backgroundColor: 'white', paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={{ fontSize: 16, color: '#000000' }}>Return Date</Text>
                   <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.expected_return_date)}</Text>
                 </View>
 

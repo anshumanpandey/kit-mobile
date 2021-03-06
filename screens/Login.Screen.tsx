@@ -40,8 +40,8 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: 'mark@streamgo.co.uk',
-      password: 'kit@123%',
+      username: '',
+      password: '',
     },
     validate: (values) => {
       const errors: any = {}
