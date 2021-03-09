@@ -38,13 +38,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>KitGo need to access your camera </string>
+	<string>Kitgo allows you to scan QR codes using your phone camera. Please allow the app to access your camera so that you can scan and checkin or check out the inventory items.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>StreamGo wants to know your locations</string>
+	<string>Kitgo needs to publish the inventory location at the time of check in and check out for better management of the items. Please allow location permissions to the app so that we can publish the information to our back office appropriately.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>KitGo wants to know your locations</string>
+	<string>Kitgo needs to publish the inventory location at the time of check in and check out for better management of the items. Please allow location permissions to the app so that we can publish the information to our back office appropriately.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>KitGo wants to know your locations</string>
+	<string>Kitgo needs to publish the inventory location at the time of check in and check out for better management of the items. Please allow location permissions to the app so that we can publish the information to our back office appropriately.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>KitGo wants to Siri functionality</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
