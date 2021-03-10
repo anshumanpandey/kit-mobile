@@ -44,6 +44,8 @@ function App() {
   const mapping = { ...EvaMapping }
   mapping.components.Button.appearances.filled.variantGroups.status.primary.backgroundColor = BRAND_BASE_COLOR
   mapping.components.Button.appearances.filled.variantGroups.status.primary.borderColor = BRAND_BASE_COLOR
+  mapping.components.Button.appearances.filled.variantGroups.status.primary.state.active.backgroundColor = BRAND_BASE_COLOR
+  mapping.components.Button.appearances.filled.variantGroups.status.primary.state.active.borderColor = BRAND_BASE_COLOR
   return (
     <PaperProvider>
       <ApplicationProvider {...eva} mapping={mapping} theme={eva.light}>
