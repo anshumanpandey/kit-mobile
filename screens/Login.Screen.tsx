@@ -85,6 +85,7 @@ const LoginScreen = () => {
           </View>
           <View style={{ padding: '5%'}}>
             <Input
+              autoCapitalize="none"
               placeholder='Username'
               value={formik.values.username}
               status={formik.errors.username && 'danger'}
