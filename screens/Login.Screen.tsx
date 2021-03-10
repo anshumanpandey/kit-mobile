@@ -22,6 +22,7 @@ import { useFormik } from 'formik';
 import { setSessionToken, useGlobalState } from '../state';
 import useFetch from 'use-http';
 import useStreamFetch from '../utils/useStreamFetch';
+import { BRAND_BASE_COLOR } from '../utils/Constants';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -98,7 +99,7 @@ const LoginScreen = () => {
               caption={formik.errors.password}
               onChangeText={formik.handleChange("password")}
             />
-            <Button disabled={loading} onPress={() => formik.submitForm()}>
+            <Button appearance="filled" disabled={loading} onPress={() => formik.submitForm()}>
               Login
             </Button>
           </View>

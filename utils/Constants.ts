@@ -1,0 +1,1 @@
+export const BRAND_BASE_COLOR = '#59c3bc'

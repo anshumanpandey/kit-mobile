@@ -4,18 +4,20 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './screens/Login.Screen';
 import { ApplicationProvider } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
+import EvaMapping from '@eva-design/eva/mapping';
 import ScanCodeScreen from './screens/ScanCode.Screen';
 import ProjectsScreen from './screens/projects/Projects.Screen';
 import SingleProjectScreen from './screens/SingleProject.Screen';
 import { setGlobalError, useGlobalState } from './state';
-import { Alert } from 'react-native';
-import { MenuProvider } from 'react-native-popup-menu';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import Ionicons from "react-native-vector-icons/Ionicons"
 import { MainScreenHeaderMenu } from './components/MainScreenHeaderMenu';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { ScreensEnum } from './utils/ScreensEnum';
 import SingleInputScreen from './screens/SingleInputScreen';
 import { isReadyRef, navigationRef } from './utils/NavigationUtils';
 import SplashScreen from 'react-native-splash-screen'
+import { BRAND_BASE_COLOR } from './utils/Constants';
 
 const Stack = createStackNavigator();
 
@@ -39,9 +41,12 @@ function App() {
       { cancelable: false }
     );
   }
+  const mapping = { ...EvaMapping }
+  mapping.components.Button.appearances.filled.variantGroups.status.primary.backgroundColor = BRAND_BASE_COLOR
+  mapping.components.Button.appearances.filled.variantGroups.status.primary.borderColor = BRAND_BASE_COLOR
   return (
     <PaperProvider>
-      <ApplicationProvider {...eva} theme={eva.light}>
+      <ApplicationProvider {...eva} mapping={mapping} theme={eva.light}>
         <NavigationContainer ref={r => navigationRef.current = r}>
           <Stack.Navigator>
             <Stack.Screen options={{ headerShown: false }} name={ScreensEnum.LoginScreen} component={LoginScreen} />
@@ -58,6 +63,14 @@ function App() {
             />
             <Stack.Screen
               options={{
+                headerLeft: ({ onPress }) => {
+                  return (<TouchableOpacity onPress={onPress}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Ionicons style={{ color: BRAND_BASE_COLOR }} name="md-chevron-back" size={30} />
+                      <Text style={{ fontSize: 14, color: BRAND_BASE_COLOR, fontWeight: 'bold' }}>Projects</Text>
+                    </View>
+                  </TouchableOpacity>);
+                },
                 headerTitle: '',
               }}
               name={ScreensEnum.SingleProjectScreen}

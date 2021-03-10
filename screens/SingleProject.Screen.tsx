@@ -1,5 +1,4 @@
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { Button } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert, Image } from 'react-native';
 import { Project, WithSubitem } from '../interfaces/Project.interface';
@@ -146,7 +145,7 @@ const SingleProjectScreen = () => {
                 )}
 
                 <View style={{ padding: '2%', backgroundColor: 'white', paddingBottom: '2%', borderBottomWidth: 1, borderBottomColor: '#00000040', flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: 16, color: '#000000' }}>Return Date</Text>
+                  <Text style={{ fontSize: 16, color: '#000000' }}>Pickup Date</Text>
                   <Text style={{ fontSize: 16, color: '#00000095' }}>{BaseDateFormat(project?.pickup_date)}</Text>
                 </View>
 
