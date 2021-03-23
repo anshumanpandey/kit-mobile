@@ -34,6 +34,7 @@ const ScanCodeScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       setLastCode(undefined)
+      setScanProcessStarted(false)
     }, [])
   );
 
@@ -49,12 +50,17 @@ const ScanCodeScreen = () => {
                 //console.log({ onBarCodeRead: d })
               }}
               onGoogleVisionBarcodesDetected={async (d) => {
-                console.log({ onGoogleVisionBarcodesDetected: d.barcodes })
+                //console.log({ onGoogleVisionBarcodesDetected: d.barcodes })
                 if (scanProcessStarted == true) return
                 setScanProcessStarted(true)
 
-                if (loading) return
-                if (lastCode) return
+                if (loading) {
+                  console.log('loading... returning')
+                  return
+                }
+                if (lastCode) {
+                  console.log(`last code ${lastCode}... returning`)
+                }
                 if (d.barcodes.length == 0) {
                   setScanProcessStarted(false)
                   return
@@ -65,10 +71,6 @@ const ScanCodeScreen = () => {
                 }
 
                 const scannedCode = d.barcodes[0]
-
-                const isSaved = await codeIsSave(scannedCode.data)
-                console.log({ isSaved })
-                if (isSaved) return
 
                 setLastCode(d.barcodes[0])
 
@@ -85,7 +87,6 @@ const ScanCodeScreen = () => {
                   })
                   .then((r) => {
                     setLastCode(undefined)
-                    setScanProcessStarted(false)
                     navigation.goBack()
                     Alert.alert("Success", r?.message || "Code Scanned")
                   })
